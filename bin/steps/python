@@ -204,6 +204,7 @@ if ! curl --silent --show-error --fail --retry 3 --connect-timeout 5 "${PIP_WHEE
   exit 1
 fi
 
+echo $(ls -a /app/)
 /app/.heroku/python/bin/python "${PIP_WHEEL}/pip" install --quiet --disable-pip-version-check --no-cache \
   "${PIP_WHEEL}" "setuptools==${SETUPTOOLS_VERSION}" "wheel==${WHEEL_VERSION}"
 
