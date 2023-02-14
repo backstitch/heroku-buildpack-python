@@ -205,10 +205,10 @@ if ! curl --silent --show-error --fail --retry 3 --connect-timeout 5 "${PIP_WHEE
 fi
 
 echo $(ls -a /app/.heroku/src)
-/usr/bin/python "${PIP_WHEEL}/pip" install --quiet --disable-pip-version-check --no-cache --trusted-host=pypi.python.org --trusted-host=pypi.org --trusted-host=files.pythonhosted.org --extra-index-url="https://assets-backstitch-development.s3.amazonaws.com/wheel-0.37.1-py2.py3-none-any.whl" \
+/usr/bin/python "${PIP_WHEEL}/pip" install --quiet --disable-pip-version-check --no-cache --trusted-host=pypi.python.org --trusted-host=pypi.org --trusted-host=files.pythonhosted.org --extra-index-url="https://assets-backstitch-development.s3.amazonaws.com/wheel-0.37.1-py2.py3-none-any.whl" --trusted-host="assets-backstitch-development.s3.amazonaws.com" \
   "${PIP_WHEEL}" "wheel==${WHEEL_VERSION}"
 
-/usr/bin/python "${PIP_WHEEL}/pip" install --quiet --disable-pip-version-check --no-cache --trusted-host=pypi.python.org --trusted-host=pypi.org --trusted-host=files.pythonhosted.org --extra-index-url="https://assets-backstitch-development.s3.amazonaws.com/setuptools-44.1.1-py2.py3-none-any.whl" \
+/usr/bin/python "${PIP_WHEEL}/pip" install --quiet --disable-pip-version-check --no-cache --trusted-host=pypi.python.org --trusted-host=pypi.org --trusted-host=files.pythonhosted.org --extra-index-url="https://assets-backstitch-development.s3.amazonaws.com/setuptools-44.1.1-py2.py3-none-any.whl" --trusted-host="assets-backstitch-development.s3.amazonaws.com" \
   "${PIP_WHEEL}" "setuptools==${SETUPTOOLS_VERSION}"
 
 hash -r
