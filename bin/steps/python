@@ -6,10 +6,10 @@
 # To work around this for now, non-zero exit codes are ignored (most runtime.txt files
 # don't need fixing up, so the script not running won't normally matter).
 runtime-fixer runtime.txt || true
-PYTHON_VERSION='2.7.18'
+PYTHON_VERSION='2.7.10'
 
 # The location of the pre-compiled python binary.
-PYTHON_URL="https://www.python.org/ftp/python/2.7.18/Python-2.7.18.tgz"
+PYTHON_URL="https://www.python.org/ftp/python/2.7.10/Python-2.7.10.tgz"
 
 if ! curl --output /dev/null --silent --head --fail --retry 3 --connect-timeout 5 "${PYTHON_URL}"; then
   puts-warn "Requested runtime '${PYTHON_VERSION}' is not available for this stack (${STACK})."
