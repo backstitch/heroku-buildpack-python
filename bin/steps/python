@@ -205,8 +205,8 @@ if ! curl --silent --show-error --fail --retry 3 --connect-timeout 5 "${PIP_WHEE
 fi
 
 echo $(ls -a /app/.heroku/src)
-/usr/bin/python "${PIP_WHEEL}/pip" install --quiet --disable-pip-version-check --no-cache \
+/usr/bin/python "${PIP_WHEEL}/pip" install --quiet --disable-pip-version-check --no-cache --trusted-host=pypi.python.org --trusted-host=pypi.org --trusted-host=files.pythonhosted.org \
   "${PIP_WHEEL}" https://files.pythonhosted.org/packages/27/d6/003e593296a85fd6ed616ed962795b2f87709c3eee2bca4f6d0fe55c6d00/wheel-0.37.1-py2.py3-none-any.whl
-/usr/bin/python "${PIP_WHEEL}/pip" install --quiet --disable-pip-version-check --no-cache \
+/usr/bin/python "${PIP_WHEEL}/pip" install --quiet --disable-pip-version-check --no-cache --trusted-host=pypi.python.org --trusted-host=pypi.org --trusted-host=files.pythonhosted.org \
   "${PIP_WHEEL}" https://files.pythonhosted.org/packages/e1/b7/182161210a13158cd3ccc41ee19aadef54496b74f2817cc147006ec932b4/setuptools-44.1.1-py2.py3-none-any.whl
 hash -r
