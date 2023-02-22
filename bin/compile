@@ -41,7 +41,7 @@ export BUILD_DIR CACHE_DIR ENV_DIR
 # environment variable mechanism (the ENV_DIR).
 if [[ "${STACK}" == "cedar-14" ]]; then
   # Since Cedar-14 is EOL on 2020-11-02 it's not worth migrating it to the new bucket.
-  DEFAULT_S3_BASE_URL='https://lang-python.s3.amazonaws.com'
+  DEFAULT_S3_BASE_URL='https://lang-python.s3.amazonaws.com/archive'
 else
   DEFAULT_S3_BASE_URL='https://heroku-buildpack-python.s3.amazonaws.com'
 fi
