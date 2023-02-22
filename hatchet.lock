@@ -1,3 +1,5 @@
 ---
-- - ".hatchet/repos/heroku/python-getting-started"
+- - "./repos/python/python-getting-started"
   - main
+- - "./repos/python/python_default"
+  - ca947f69027b2a30be5d26f9a42f25e54f4d7a1a
