@@ -71,11 +71,6 @@ release()
   capture ${BUILDPACK_HOME}/bin/release ${BUILD_DIR}
 }
 
-updateVersion()
-{
-  echo "$2" > "test/fixtures/${1}/runtime.txt"
-}
-
 assertCapturedEquals()
 {
   assertEquals "$@" "$(cat ${STD_OUT})"
@@ -88,8 +83,7 @@ assertCapturedNotEquals()
 
 assertCaptured()
 {
-  stdroute=${2:-STD_OUT}
-  assertFileContains "$1" "${!stdroute}"
+  assertFileContains "$@" "${STD_OUT}"
 }
 
 assertNotCaptured()
@@ -99,25 +93,19 @@ assertNotCaptured()
 
 assertCapturedSuccess()
 {
-  assertEquals "Captured exit code -" "0" "${RETURN}"
-  # assertEquals "STD_ERR -" "" "$(cat ${STD_ERR})"
-
-  if [ $RETURN -ne 0 -a -z "$(cat ${STD_ERR})" ]; then
-    # Failing exit code but stderr was empty. Display stdout to help debugging.
-    cat $STD_OUT
-    echo
-  fi
+  assertEquals "Expected captured exit code to be 0; was <${RETURN}>" "0" "${RETURN}"
+  assertEquals "Expected STD_ERR to be empty; was <$(cat ${STD_ERR})>" "" "$(cat ${STD_ERR})"
 }
 
 # assertCapturedError [[expectedErrorCode] expectedErrorMsg]
 assertCapturedError()
 {
   if [ $# -gt 1 ]; then
-    local expectedErrorCode=${1}
+    expectedErrorCode=${1}
     shift
   fi
 
-  local expectedErrorMsg=${1:-""}
+  expectedErrorMsg=${1:-""}
 
   if [ -z ${expectedErrorCode} ]; then
     assertTrue "Expected captured exit code to be greater than 0; was <${RETURN}>" "[ ${RETURN} -gt 0 ]"
@@ -125,24 +113,38 @@ assertCapturedError()
     assertTrue "Expected captured exit code to be <${expectedErrorCode}>; was <${RETURN}>" "[ ${RETURN} -eq ${expectedErrorCode} ]"
   fi
 
-  if [ "${expectedErrorMsg}" != "" ]; then
-    assertFileContains "Expected STD_ERR to contain error <${expectedErrorMsg}>" "${expectedErrorMsg}" "${STD_ERR}"
-  fi
+  assertFileContains "Expected STD_OUT to contain error <${expectedErrorMsg}>" "${expectedErrorMsg}" "${STD_OUT}"
+  assertEquals       "STD_ERR should always be empty" "" "$(cat ${STD_ERR})"
+}
+
+assertAppDetected()
+{
+  expectedAppType=${1?"Must provide app type"}
+
+  assertCapturedSuccess
+  assertEquals "${expectedAppType}" "$(cat ${STD_OUT})"
+}
+
+assertNoAppDetected()
+{
+  assertEquals "1" "${RETURN}"
+  assertEquals "no" "$(cat ${STD_OUT})"
+  assertEquals "" "$(cat ${STD_ERR})"
 }
 
 _assertContains()
 {
   if [ 5 -eq $# ]; then
-    local msg=$1
+    msg=$1
     shift
   elif [ ! 4 -eq $# ]; then
     fail "Expected 4 or 5 parameters; Receieved $# parameters"
   fi
 
-  local needle=$1
-  local haystack=$2
-  local expectation=$3
-  local haystack_type=$4
+  needle=$1
+  haystack=$2
+  expectation=$3
+  haystack_type=$4
 
   case "${haystack_type}" in
     "file") grep -q -F -e "${needle}" ${haystack} ;;
@@ -156,19 +158,7 @@ _assertContains()
     esac
 
     fail "${msg:-${default_msg}}"
-
-    if [ "${haystack_type}" == "file" ]; then
-      echo
-      cat "${haystack}"
-    fi
   fi
-}
-
-debug()
-{
-  cat $STD_OUT
-  echo '^^^^^^'
-  cat $STD_ERR
 }
 
 assertContains()
@@ -211,56 +201,4 @@ assertFileMD5()
   fi
 
   assertEquals "${expected_md5_cmd_output}" "`${md5_cmd}`"
-}
-
-# Test helpers
-mktmpdir() {
-  dir=$(mktemp -t testXXXXX)
-  rm -rf $dir
-  mkdir $dir
-  echo $dir
-}
-
-detect() {
-  capture $(pwd)/bin/detect $(pwd)/test/fixtures/$1
-}
-
-compile_dir=""
-
-default_process_types_cleanup() {
-  file="/tmp/default_process_types"
-  if [ -f "$file" ]; then
-    rm "$file"
-  fi
-}
-
-compile() {
-  default_process_types_cleanup
-  bp_dir=$(mktmpdir)
-  compile_dir=$(mktmpdir)
-  cp -a $(pwd)/* ${bp_dir}
-  cp -a ${bp_dir}/test/fixtures/$1/. ${compile_dir}
-  capture ${bp_dir}/bin/compile ${compile_dir} ${2:-$(mktmpdir)} $3
-}
-
-compileDir() {
-  default_process_types_cleanup
-
-  local bp_dir=$(mktmpdir)
-  local compile_dir=${1:-$(mktmpdir)}
-  local cache_dir=${2:-$(mktmpdir)}
-  local env_dir=$3
-
-  cp -a $(pwd)/* ${bp_dir}
-  capture ${bp_dir}/bin/compile ${compile_dir} ${cache_dir} ${env_dir}
-}
-
-release() {
-  bp_dir=$(mktmpdir)
-  cp -a $(pwd)/* ${bp_dir}
-  capture ${bp_dir}/bin/release ${bp_dir}/test/fixtures/$1
-}
-
-assertFile() {
-  assertEquals "$1" "$(cat ${compile_dir}/$2)"
 }
