@@ -9,13 +9,13 @@
 #
 # This script is invoked by [`bin/compile`](/).
 
-if [[ "$STACK" != "cedar-14" ]]; then
+if [[ "$STACK" == "heroku-16" ]]; then
     # libmemcached is pre-installed in the stack image so there is no need to vendor it.
     return 0
 fi
 
 # The location of the pre-compiled libmemcached binary.
-VENDORED_MEMCACHED="${S3_BASE_URL}/${STACK}/libraries/vendor/libmemcache.tar.gz"
+VENDORED_MEMCACHED="${VENDOR_URL}/libraries/vendor/libmemcache.tar.gz"
 
 # Syntax sugar.
 # shellcheck source=bin/utils
@@ -29,7 +29,6 @@ if (pip-grep -s requirements.txt pylibmc &> /dev/null) then
     mkdir -p .heroku/vendor
     # Download and extract libmemcached into target vendor directory.
     curl "$VENDORED_MEMCACHED" -s | tar zxv -C .heroku/vendor &> /dev/null
-    mcount "steps.vendor.pylibmc"
   fi
 
   LIBMEMCACHED=$(pwd)/vendor

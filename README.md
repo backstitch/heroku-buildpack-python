@@ -2,57 +2,38 @@
 
 # Heroku Buildpack: Python
 
-[![Build Status](https://travis-ci.com/heroku/heroku-buildpack-python.svg?branch=main)](https://travis-ci.com/heroku/heroku-buildpack-python)
+[![Build Status](https://travis-ci.org/heroku/heroku-buildpack-python.svg?branch=master)](https://travis-ci.org/heroku/heroku-buildpack-python)
 
-This is the official [Heroku buildpack](https://devcenter.heroku.com/articles/buildpacks) for Python apps.
+This is the official [Heroku buildpack](https://devcenter.heroku.com/articles/buildpacks) for Python apps, powered by [Pipenv](http://docs.pipenv.org/), [pip](https://pip.pypa.io/) and other excellent software.
 
-Recommended web frameworks include **Django** and **Flask**, among others. The recommended webserver is **Gunicorn**. There are no restrictions around what software can be used (as long as it's pip-installable). Web processes must bind to `$PORT`, and only the HTTP protocol is permitted for incoming connections.
+Recommended web frameworks include **Django** and **Flask**. The recommended webserver is **Gunicorn**. There are no restrictions around what software can be used (as long as it's pip-installable). Web processes must bind to `$PORT`, and only the HTTP protocol is permitted for incoming connections.
 
-Python packages with C dependencies that are not [available on the stack image](https://devcenter.heroku.com/articles/stack-packages) are generally not supported, unless `manylinux` wheels are provided by the package maintainers (common). For recommended solutions, check out [this article](https://devcenter.heroku.com/articles/python-c-deps) for more information.
+Python packages with C dependencies that are not [available on the stack image](https://devcenter.heroku.com/articles/stack-packages) are generally not supported, unless `manylinux` wheels are provided by the package maintainers (common). For recommended solutions, check out [this article](https://devcenter.heroku.com/articles/python-c-deps) for more information. 
 
 See it in Action
 ----------------
-```
-$ ls
-my-application		requirements.txt	runtime.txt
 
-$ git push heroku main
-Counting objects: 4, done.
-Delta compression using up to 8 threads.
-Compressing objects: 100% (2/2), done.
-Writing objects: 100% (4/4), 276 bytes | 276.00 KiB/s, done.
-Total 4 (delta 0), reused 0 (delta 0)
-remote: Compressing source files... done.
-remote: Building source:
-remote:
-remote: -----> Python app detected
-remote: -----> Installing python
-remote: -----> Installing pip
-remote: -----> Installing SQLite3
-remote: -----> Installing requirements with pip
-remote:        Collecting flask (from -r /tmp/build_c2c067ef79ff14c9bf1aed6796f9ed1f/requirements.txt (line 1))
-remote:          Downloading ...
-remote:        Installing collected packages: Werkzeug, click, MarkupSafe, Jinja2, itsdangerous, flask
-remote:        Successfully installed Jinja2-2.10 MarkupSafe-1.1.0 Werkzeug-0.14.1 click-7.0 flask-1.0.2 itsdangerous-1.1.0
-remote:
-remote: -----> Discovering process types
-remote:        Procfile declares types -> (none)
-remote:
-```
+Deploying a Python application couldn't be easier:
 
-A `requirements.txt` must be present at the root of your application's repository to deploy.
+    $ ls
+    Pipfile		Pipfile.lock	Procfile	web.py
 
-To specify your python version, you also need a `runtime.txt` file - unless you are using the default Python runtime version.
+    $ heroku create --buildpack heroku/python
 
-Current default Python Runtime: Python 3.6.12
+    $ git push heroku master
+    …
+    -----> Python app detected
+    -----> Installing python-3.6.4
+    -----> Installing pip
+    -----> Installing requirements with latest pipenv…
+           ...
+           Installing dependencies from Pipfile…
+    -----> Discovering process types
+           Procfile declares types -> (none)
 
-Alternatively, you can provide a `setup.py` file, or a `Pipfile`.
-Using `pipenv` will generate `runtime.txt` at build time if one of the field `python_version` or `python_full_version` is specified in the `requires` section of your `Pipfile`.
+A `Pipfile` or `requirements.txt` must be present at the root of your application's repository.
 
-Specify a Buildpack Version
----------------------------
-
-You can specify the latest production release of this buildpack for upcoming builds of an existing application:
+You can also specify the latest production release of this buildpack for upcoming builds of an existing application:
 
     $ heroku buildpacks:set heroku/python
 
@@ -60,37 +41,22 @@ You can specify the latest production release of this buildpack for upcoming bui
 Specify a Python Runtime
 ------------------------
 
-Supported runtime options include:
+Specific versions of the Python runtime can be specified in your `Pipfile`:
 
-- `python-3.9.0`
-- `python-3.8.6`
-- `python-3.7.9`
-- `python-3.6.12`
-- `python-2.7.18`
+    [requires]
+    python_version = "2.7"
 
-## Tests
+Or, more specifically:
 
-The buildpack tests use [Docker](https://www.docker.com/) to simulate
-Heroku's [stack images.](https://devcenter.heroku.com/articles/stack)
+    [requires]
+    python_full_version = "2.7.14"
 
-To run the test suite against the default stack:
+Or, with a `runtime.txt` file:
 
-```
-make test
-```
+    $ cat runtime.txt
+    python-2.7.14
 
-Or to test against a particular stack:
+Runtime options include:
 
-```
-make test STACK=heroku-16
-```
-
-To run only a subset of the tests:
-
-```
-make test TEST_CMD=tests/versions
-```
-
-The tests are run via the vendored
-[shunit2](https://github.com/kward/shunit2)
-test framework.
+- `python-3.6.4`
+- `python-2.7.14`

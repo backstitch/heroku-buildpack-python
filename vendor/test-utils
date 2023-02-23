@@ -93,25 +93,19 @@ assertNotCaptured()
 
 assertCapturedSuccess()
 {
-  assertEquals "Captured exit code -" "0" "${RETURN}"
-  assertEquals "STD_ERR -" "" "$(cat ${STD_ERR})"
-
-  if [ $RETURN -ne 0 -a -z "$(cat ${STD_ERR})" ]; then
-    # Failing exit code but stderr was empty. Display stdout to help debugging.
-    cat $STD_OUT
-    echo
-  fi
+  assertEquals "Expected captured exit code to be 0; was <${RETURN}>" "0" "${RETURN}"
+  assertEquals "Expected STD_ERR to be empty; was <$(cat ${STD_ERR})>" "" "$(cat ${STD_ERR})"
 }
 
 # assertCapturedError [[expectedErrorCode] expectedErrorMsg]
 assertCapturedError()
 {
   if [ $# -gt 1 ]; then
-    local expectedErrorCode=${1}
+    expectedErrorCode=${1}
     shift
   fi
 
-  local expectedErrorMsg=${1:-""}
+  expectedErrorMsg=${1:-""}
 
   if [ -z ${expectedErrorCode} ]; then
     assertTrue "Expected captured exit code to be greater than 0; was <${RETURN}>" "[ ${RETURN} -gt 0 ]"
@@ -119,24 +113,38 @@ assertCapturedError()
     assertTrue "Expected captured exit code to be <${expectedErrorCode}>; was <${RETURN}>" "[ ${RETURN} -eq ${expectedErrorCode} ]"
   fi
 
-  if [ "${expectedErrorMsg}" != "" ]; then
-    assertFileContains "Expected STD_ERR to contain error <${expectedErrorMsg}>" "${expectedErrorMsg}" "${STD_ERR}"
-  fi
+  assertFileContains "Expected STD_OUT to contain error <${expectedErrorMsg}>" "${expectedErrorMsg}" "${STD_OUT}"
+  assertEquals       "STD_ERR should always be empty" "" "$(cat ${STD_ERR})"
+}
+
+assertAppDetected()
+{
+  expectedAppType=${1?"Must provide app type"}
+
+  assertCapturedSuccess
+  assertEquals "${expectedAppType}" "$(cat ${STD_OUT})"
+}
+
+assertNoAppDetected()
+{
+  assertEquals "1" "${RETURN}"
+  assertEquals "no" "$(cat ${STD_OUT})"
+  assertEquals "" "$(cat ${STD_ERR})"
 }
 
 _assertContains()
 {
   if [ 5 -eq $# ]; then
-    local msg=$1
+    msg=$1
     shift
   elif [ ! 4 -eq $# ]; then
     fail "Expected 4 or 5 parameters; Receieved $# parameters"
   fi
 
-  local needle=$1
-  local haystack=$2
-  local expectation=$3
-  local haystack_type=$4
+  needle=$1
+  haystack=$2
+  expectation=$3
+  haystack_type=$4
 
   case "${haystack_type}" in
     "file") grep -q -F -e "${needle}" ${haystack} ;;
@@ -150,19 +158,7 @@ _assertContains()
     esac
 
     fail "${msg:-${default_msg}}"
-
-    if [ "${haystack_type}" == "file" ]; then
-      echo
-      cat "${haystack}"
-    fi
   fi
-}
-
-debug()
-{
-  cat $STD_OUT
-  echo '^^^^^^'
-  cat $STD_ERR
 }
 
 assertContains()

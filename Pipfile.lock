@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "397f2c55e3558ea57d292e3fc19b34e483770e5ec02cdedfb1f330680cd26635"
+            "sha256": "36d17c46a8b1b844b3cae475f6f42d6c0a9e59b2a9685cbcdc0985656a7a129f"
         },
         "host-environment-markers": {
             "implementation_name": "cpython",
@@ -27,26 +27,25 @@
         ]
     },
     "default": {
-        "delegator.py": {
+        "bob-builder": {
             "hashes": [
-                "sha256:2575c4adc923ad0b8fdaa433f862b2b7cf21982717fb23cc895fd8f249ea820c",
-                "sha256:495e11ada66648650171a6c9a188df4eb050b235abff8771f41ee8a064eb9ded"
+                "sha256:b4de49a8e436fcaf82236ea43f78413b4a4c92100726e382ab57b6bdfb38fe64",
+                "sha256:288e3e765c4890fe9a63ae52ac6b4a963c13fe508482c70ff701a5ae21b9a673"
             ],
             "version": "==0.0.13"
         },
-        "pexpect": {
+        "boto": {
             "hashes": [
-                "sha256:f853b52afaf3b064d29854771e2db509ef80392509bde2dd7a6ecf2dfc3f0018",
-                "sha256:3d132465a75b57aa818341c6521392a06cc660feb3988d7f1074f39bd23c9a92"
+                "sha256:13be844158d1bd80a94c972c806ec8381b9ea72035aa06123c5db6bc6a6f3ead",
+                "sha256:deb8925b734b109679e3de65856018996338758f4b916ff4fe7bb62b6d7000d1"
             ],
-            "version": "==4.2.1"
+            "version": "==2.48.0"
         },
-        "ptyprocess": {
+        "docopt": {
             "hashes": [
-                "sha256:e8c43b5eee76b2083a9badde89fd1bbce6c8942d1045146e100b7b5e014f4f1a",
-                "sha256:e64193f0047ad603b71f202332ab5527c5e52aa7c8b609704fc28c0dc20c4365"
+                "sha256:49b3a825280bd66b3aa83585ef59c4a8c82f2c8a522dbe754a8bc8d08c85c491"
             ],
-            "version": "==0.5.2"
+            "version": "==0.6.2"
         }
     },
     "develop": {}
