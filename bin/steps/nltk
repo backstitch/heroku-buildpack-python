@@ -19,6 +19,8 @@ if sp-grep -s nltk; then
 
     nltk_packages_definition="$BUILD_DIR/nltk.txt"
 
+    puts-warn "${nltk_packages_definition}"
+
     if [ -f "$nltk_packages_definition" ]; then
 
         readarray -t nltk_packages < "$nltk_packages_definition"
