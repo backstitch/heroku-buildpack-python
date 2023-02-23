@@ -18,6 +18,7 @@ if sp-grep -s nltk; then
     puts-step "Downloading NLTK corpora…"
 
     nltk_packages_definition="$BUILD_DIR/nltk.txt"
+    print(-f "$nltk_packages_definition");
 
     if [ -f "$nltk_packages_definition" ]; then
 
